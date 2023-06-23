@@ -4,6 +4,8 @@ import { renderUploadImageComponent } from "./upload-image-component.js";
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   const render = () => {
     // TODO: Реализовать страницу добавления поста
+
+    let imageUrl = "";
     const appHtml = `
     <div class="page-container">
       <div class="header-container"></div>
@@ -36,7 +38,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     document.getElementById("add-button").addEventListener("click", () => {
       onAddPostClick({
         description: document.getElementById('text-input').value,
-        imageUrl: imageUrl,
+        imageUrl: `${imageUrl}`,
       });
     });
   };
