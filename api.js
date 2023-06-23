@@ -4,7 +4,7 @@ const personalKey = "prod";
 const baseHost = "https://webdev-hw-api.vercel.app";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
-export function getPosts({ token}) {
+export function getPosts({ token }) {
   return fetch(postsHost, {
     method: "GET",
     headers: {
@@ -53,6 +53,27 @@ export function loginUser({ login, password }) {
       throw new Error("Неверный логин или пароль");
     }
     return response.json();
+  });
+}
+
+export function onAddPostClic({ description, imageUrl }) {
+  return fetch(postsHost, {
+    method: "POST",
+    body: JSON.stringify({
+      description,
+      imageUrl
+    }),
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 400) {
+      throw new Error("Не добавлено фото или описание");
+    }
+    return response.json();
+  })
+  .catch((error) => {
+    console.error(error);
   });
 }
 

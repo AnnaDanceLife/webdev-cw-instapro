@@ -48,7 +48,11 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
       }
 
       onAddPostClick({
-        description: textarea,
+        description: textarea
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;"),
         imageUrl: `${imageUrl}`,
       });
     });
