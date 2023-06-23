@@ -3,7 +3,7 @@ import { renderUploadImageComponent } from "./upload-image-component.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   const render = () => {
-    // TODO: Реализовать страницу добавления поста
+    // Реализована страницу добавления поста
 
     let imageUrl = "";
     const appHtml = `
@@ -36,8 +36,19 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     }
 
     document.getElementById("add-button").addEventListener("click", () => {
+      const textarea = document.getElementById('text-input').value;
+      if (textarea === '') {
+        alert("Опишите фотографию");
+        return;
+      }
+
+      if (!imageUrl) {
+        alert("Не выбрана фотография");
+        return;
+      }
+
       onAddPostClick({
-        description: document.getElementById('text-input').value,
+        description: textarea,
         imageUrl: `${imageUrl}`,
       });
     });
