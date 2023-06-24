@@ -56,7 +56,7 @@ export function loginUser({ login, password }) {
   });
 }
 
-export function onAddPostClic({ description, imageUrl }) {
+export function onAddPostClic({ description, imageUrl, token}) {
   return fetch(postsHost, {
     method: "POST",
     body: JSON.stringify({
@@ -66,14 +66,22 @@ export function onAddPostClic({ description, imageUrl }) {
     headers: {
       Authorization: token,
     },
-  }).then((response) => {
+  })
+  .then((response) => {
     if (response.status === 400) {
       throw new Error("Не добавлено фото или описание");
     }
     return response.json();
   })
+  .then(() => {
+    return getPosts({token});
+  })
   .catch((error) => {
     console.error(error);
+    if (error.message === "Не добавлено фото или описание") {
+      alert("Не добавлено фото или описание");
+      return;
+  }
   });
 }
 

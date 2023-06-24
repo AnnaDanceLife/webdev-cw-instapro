@@ -1,5 +1,6 @@
 import { renderHeaderComponent } from "./header-component.js";
 import { renderUploadImageComponent } from "./upload-image-component.js";
+import { getToken } from "../index.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   const render = () => {
@@ -54,6 +55,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
           .replaceAll(">", "&gt;")
           .replaceAll('"', "&quot;"),
         imageUrl: `${imageUrl}`,
+        token: getToken(),
       });
     });
   };
