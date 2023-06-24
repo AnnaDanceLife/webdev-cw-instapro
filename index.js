@@ -15,7 +15,7 @@ import {
   removeUserFromLocalStorage,
   saveUserToLocalStorage,
 } from "./helpers.js";
-// import { getPostsUser } from "./api.js";
+import { getPostsUser } from "./api.js";
 
 export let user = getUserFromLocalStorage();
 export let page = null;
@@ -55,7 +55,7 @@ export const goToPage = (newPage, data) => {
       page = LOADING_PAGE;
       renderApp();
 
-      return getPosts({ token: getToken()})
+      return getPosts({ token: getToken() })
         .then((newPosts) => {
           page = POSTS_PAGE;
           posts = newPosts;
@@ -68,22 +68,21 @@ export const goToPage = (newPage, data) => {
     }
 
     if (newPage === USER_POSTS_PAGE) {
-      // TODO: реализовать получение постов юзера из API
-      // return getPostsUser({token: getToken(), id:data.userId })
-      // .then((newPosts) => {
-      //   page = USER_POSTS_PAGE;
-      //   posts = newPosts;
-      //   renderApp();
-      // })
-      // .catch((error) => {
-      //   console.log(error);
-      //   console.log("Открываю страницу пользователя: ", data.userId);
-      //   goToPage(POSTS_PAGE);
-      // });
+      // Реализовано получение постов юзера из API
+      page = LOADING_PAGE;
+      renderApp();
 
-      page = USER_POSTS_PAGE;
-      posts = [];
-      return renderApp();
+      return getPostsUser({ token: getToken(), id: data.userId })
+        .then((newPosts) => {
+          posts = newPosts;
+          page = USER_POSTS_PAGE;
+
+          renderApp();
+        })
+        .catch((error) => {
+            console.log(error);  
+          goToPage(POSTS_PAGE);
+        });
     }
 
     page = newPage;
@@ -125,7 +124,7 @@ const renderApp = () => {
         // Реализовано добавление поста в API
         addNewPost({
           token, description, imageUrl
-        }). then(() => {
+        }).then(() => {
           return goToPage(POSTS_PAGE);
         })
       },
@@ -139,9 +138,10 @@ const renderApp = () => {
   }
 
   if (page === USER_POSTS_PAGE) {
-    // TODO: реализовать страницу фотографию пользвателя
-    appEl.innerHTML = "Здесь будет страница фотографий пользователя";
-    return;
+    // Реализована страница с фотографиями пользвателя
+    return renderPostsPageComponent({
+      appEl
+    });
   }
 };
 

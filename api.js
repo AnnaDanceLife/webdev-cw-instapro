@@ -73,35 +73,31 @@ export function addNewPost({ description, imageUrl, token}) {
     }
     return response.json();
   })
-  // .then(() => {
-  //   return getPosts({token});
-  // })
-  // .catch((error) => {
-  //   console.error(error);
-  //   if (error.message === "Не добавлено фото или описание") {
-  //     alert("Не добавлено фото или описание");
-  //     return;
-  // }
-  // });
+  .catch((error) => {
+    if (error.message === "Не добавлено фото или описание") {
+      alert("Не добавлено фото или описание");
+      return;
+  }
+  });
 }
 
-// export function getPostsUser({ token, id }) {
-//   return fetch(postsHost + "user-posts/id", {
-//     method: "GET",
-//     headers: {
-//       Authorization: token,
-//     },
-//   })
-//     .then((response) => {
-//       if (response.status === 401) {
-//         throw new Error("Нет авторизации");
-//       }
-//       return response.json();
-//     })
-//     .then((data) => {
-//       return data.posts
-//     });
-//   }
+export function getPostsUser({ token, id }) {
+  return fetch(postsHost + `/user-posts/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return data.posts
+    })
+  }
 
 // Загружает картинку в облако, возвращает url загруженной картинки
 export function uploadImage({ file }) {
