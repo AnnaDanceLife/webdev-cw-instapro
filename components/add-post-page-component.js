@@ -4,7 +4,7 @@ import { getToken } from "../index.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   const render = () => {
-    // Реализована страницу добавления поста
+    // Реализована страница добавления поста
 
     let imageUrl = "";
     const appHtml = `

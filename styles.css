@@ -93,6 +93,10 @@
   cursor: pointer;
 }
 
+.like-button-active-like {
+  background-color: red;
+}
+
 .user-name {
   font-weight: 500;
 }

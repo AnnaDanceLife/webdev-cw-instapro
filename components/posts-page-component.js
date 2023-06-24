@@ -1,11 +1,11 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
+import { getToken } from "../index.js";
+import { countLikesApi } from "../api.js";
 
 export function renderPostsPageComponent({ appEl}) {
   // Реализован рендер постов из api
-  console.log("Актуальный список постов:", posts);
-
   /**
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
@@ -22,7 +22,7 @@ export function renderPostsPageComponent({ appEl}) {
       <img class="post-image" src="${post.imageUrl}">
     </div>
     <div class="post-likes">
-      <button data-post-id="${post.id}" class="like-button">
+      <button data-post-id="${post.id}" class="like-button ${post.isLiked ? '-active-like' : ''} ">
         <img src="./assets/images/like-active.svg">
       </button>
       <p class="post-likes-text">
@@ -60,4 +60,21 @@ let userEls = document.querySelectorAll(".post-header");
       });
     });
   }
+
+  const countLikesElements = document.querySelectorAll(".like-button");
+
+    for (const countLikesElement of countLikesElements) {
+      countLikesElement.addEventListener('click', (event) => {
+        // event.stopPropagation();
+
+        countLikesApi({
+          postId: countLikesElement.dataset.postId, 
+          token: getToken()});
+      })
+      .then((resultLikes) => {
+        resultLikes.length
+        renderApp();
+      })
+
+    };
 }

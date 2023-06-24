@@ -56,7 +56,7 @@ export function loginUser({ login, password }) {
   });
 }
 
-export function addNewPost({ description, imageUrl, token}) {
+export function addNewPost({ description, imageUrl, token }) {
   return fetch(postsHost, {
     method: "POST",
     body: JSON.stringify({
@@ -67,18 +67,18 @@ export function addNewPost({ description, imageUrl, token}) {
       Authorization: token,
     },
   })
-  .then((response) => {
-    if (response.status === 400) {
-      throw new Error("Не добавлено фото или описание");
-    }
-    return response.json();
-  })
-  .catch((error) => {
-    if (error.message === "Не добавлено фото или описание") {
-      alert("Не добавлено фото или описание");
-      return;
-  }
-  });
+    .then((response) => {
+      if (response.status === 400) {
+        throw new Error("Не добавлено фото или описание");
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      if (error.message === "Не добавлено фото или описание") {
+        alert("Не добавлено фото или описание");
+        return;
+      }
+    });
 }
 
 export function getPostsUser({ token, id }) {
@@ -97,7 +97,23 @@ export function getPostsUser({ token, id }) {
     .then((data) => {
       return data.posts
     })
-  }
+}
+
+export const countLikesApi = (postId, token) => {
+  console.log(postId);
+  fetch(postsHost + `/${postId}/like`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    }
+  })
+    .then((result) => {
+      result.isLiked = true;
+      result.isLiked = !result.isLiked;
+
+      return result.likes
+    })
+}
 
 // Загружает картинку в облако, возвращает url загруженной картинки
 export function uploadImage({ file }) {
