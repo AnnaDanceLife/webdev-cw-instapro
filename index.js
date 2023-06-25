@@ -16,6 +16,7 @@ import {
   saveUserToLocalStorage,
 } from "./helpers.js";
 import { getPostsUser } from "./api.js";
+import { addLikesApi, delLikesApi } from "./api.js";
 
 export let user = getUserFromLocalStorage();
 export let page = null;
@@ -80,14 +81,39 @@ export const goToPage = (newPage, data) => {
           renderApp();
         })
         .catch((error) => {
-            console.log(error);  
+          console.log(error);
           goToPage(POSTS_PAGE);
         });
     }
+    if (newPage === POSTS_PAGE) {
+      let isLiked = false;
+      renderApp();
+      if (!isLiked) {
+        return delLikesApi({ token: getToken(), postId: data.postId })
+          .then((result) => {
+            result.likes.length === 0 ? result.likes.length : result.likes.length - 1;
+            isLiked = !isLiked;
+            renderApp();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
 
+      } else {
+        return addLikesApi({ token: getToken(), postId: data.postId })
+          .then((result) => {
+            result.likes.length + 1;
+            isLiked = !isLiked;
+            renderApp();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    }
     page = newPage;
     renderApp();
-
+    
     return;
   }
 

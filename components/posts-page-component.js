@@ -1,18 +1,19 @@
-import { USER_POSTS_PAGE } from "../routes.js";
+import { USER_POSTS_PAGE, POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage } from "../index.js";
-import { getToken } from "../index.js";
-import { countLikesApi } from "../api.js";
 
-export function renderPostsPageComponent({ appEl}) {
+// import { getToken } from "../index.js";
+// import { countLikesApi } from "../api.js";
+
+export function renderPostsPageComponent({ appEl }) {
   // Реализован рендер постов из api
   /**
    * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
   const appHtml = posts.
-  map((post) => {
-    return`                  
+    map((post) => {
+      return `                  
     <li class="post">
     <div class="post-header" data-user-id="${post.user.id}">
         <img src="${post.user.imageUrl}" class="post-header__user-image">
@@ -34,12 +35,12 @@ export function renderPostsPageComponent({ appEl}) {
       ${post.description}
     </p>
     <p class="post-date">
-      ${ post.createdAt}
+      ${post.createdAt}
     </p>
   </li>
 `;
-  })
-  .join('');
+    })
+    .join('');
 
   appEl.innerHTML = `
   <div class="page-container">
@@ -52,7 +53,7 @@ export function renderPostsPageComponent({ appEl}) {
     element: document.querySelector(".header-container"),
   });
 
-let userEls = document.querySelectorAll(".post-header");
+  let userEls = document.querySelectorAll(".post-header");
   for (let userEl of userEls) {
     userEl.addEventListener("click", () => {
       goToPage(USER_POSTS_PAGE, {
@@ -63,18 +64,10 @@ let userEls = document.querySelectorAll(".post-header");
 
   const countLikesElements = document.querySelectorAll(".like-button");
 
-    for (const countLikesElement of countLikesElements) {
-      countLikesElement.addEventListener('click', (event) => {
-        // event.stopPropagation();
-
-        countLikesApi({
-          postId: countLikesElement.dataset.postId, 
-          token: getToken()});
-      })
-      .then((resultLikes) => {
-        resultLikes.length
-        renderApp();
-      })
-
-    };
+  for (const countLikesElement of countLikesElements) {
+    countLikesElement.addEventListener('click', (event) => {
+      const postId = countLikesElement.dataset.postId;
+      goToPage(POSTS_PAGE, USER_POSTS_PAGE, postId)
+    });
+  }
 }

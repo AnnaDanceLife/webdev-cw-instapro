@@ -99,21 +99,43 @@ export function getPostsUser({ token, id }) {
     })
 }
 
-export const countLikesApi = (postId, token) => {
-  console.log(postId);
+export const addLikesApi = (postId, token) => {
+  // console.log(postId);
   fetch(postsHost + `/${postId}/like`, {
     method: "POST",
     headers: {
       Authorization: token,
     }
   })
-    .then((result) => {
-      result.isLiked = true;
-      result.isLiked = !result.isLiked;
-
-      return result.likes
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return data
     })
 }
+
+export const delLikesApi = (postId, token) => {
+  fetch(postsHost + `/${postId}/dislike`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    }
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return data
+    })
+}
+
 
 // Загружает картинку в облако, возвращает url загруженной картинки
 export function uploadImage({ file }) {
