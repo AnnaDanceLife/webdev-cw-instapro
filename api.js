@@ -99,9 +99,8 @@ export function getPostsUser({ token, id }) {
     })
 }
 
-export const addLikesApi = (postId, token) => {
-  // console.log(postId);
-  fetch(postsHost + `/${postId}/like`, {
+export function likeFetchFunc({ postId, token }) {
+  return fetch(postsHost + `/${postId}/like`, {
     method: "POST",
     headers: {
       Authorization: token,
@@ -113,13 +112,10 @@ export const addLikesApi = (postId, token) => {
       }
       return response.json();
     })
-    .then((data) => {
-      return data
-    })
 }
 
-export const delLikesApi = (postId, token) => {
-  fetch(postsHost + `/${postId}/dislike`, {
+export function dislikeFetchFunc({ postId, token }) {
+  return fetch(postsHost + `/${postId}/dislike`, {
     method: "POST",
     headers: {
       Authorization: token,
@@ -131,11 +127,7 @@ export const delLikesApi = (postId, token) => {
       }
       return response.json();
     })
-    .then((data) => {
-      return data
-    })
 }
-
 
 // Загружает картинку в облако, возвращает url загруженной картинки
 export function uploadImage({ file }) {

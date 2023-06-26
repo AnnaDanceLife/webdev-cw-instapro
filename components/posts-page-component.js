@@ -1,9 +1,8 @@
 import { USER_POSTS_PAGE, POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
+import { posts, goToPage, getToken, page } from "../index.js";
 
-// import { getToken } from "../index.js";
-// import { countLikesApi } from "../api.js";
+import { likeFetchFunc, dislikeFetchFunc } from "../api.js";
 
 export function renderPostsPageComponent({ appEl }) {
   // Реализован рендер постов из api
@@ -23,8 +22,8 @@ export function renderPostsPageComponent({ appEl }) {
       <img class="post-image" src="${post.imageUrl}">
     </div>
     <div class="post-likes">
-      <button data-post-id="${post.id}" class="like-button ${post.isLiked ? '-active-like' : ''} ">
-        <img src="./assets/images/like-active.svg">
+      <button data-post-id="${post.id}" data-liked="${post.isLiked}" class="like-button ">
+      ${post.isLiked ? '<img src="./assets/images/like-active.svg">' : '<img src="./assets/images/like-not-active.svg">'} 
       </button>
       <p class="post-likes-text">
         Нравится: <strong>${post.likes.length}</strong>
@@ -60,14 +59,36 @@ export function renderPostsPageComponent({ appEl }) {
         userId: userEl.dataset.userId,
       });
     });
-  }
 
-  const countLikesElements = document.querySelectorAll(".like-button");
+    if (getToken()) {
 
-  for (const countLikesElement of countLikesElements) {
-    countLikesElement.addEventListener('click', (event) => {
-      const postId = countLikesElement.dataset.postId;
-      goToPage(POSTS_PAGE, USER_POSTS_PAGE, postId)
-    });
+      const countLikesElements = document.querySelectorAll(".like-button");
+
+      for (const countLikesElement of countLikesElements) {
+        countLikesElement.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const postId = countLikesElement.dataset.postId;
+
+          if (countLikesElement.dataset.liked === 'false') {
+
+            likeFetchFunc({ postId, token: getToken() })
+              .then(() => {
+                goToPage(POSTS_PAGE);
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+          } else {
+            dislikeFetchFunc({ postId, token: getToken() })
+              .then(() => {
+                goToPage(POSTS_PAGE);
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+          }
+        });
+      }
+    }
   }
 }
