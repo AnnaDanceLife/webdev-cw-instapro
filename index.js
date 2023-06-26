@@ -16,7 +16,6 @@ import {
   saveUserToLocalStorage,
 } from "./helpers.js";
 import { getPostsUser } from "./api.js";
-// import { addLikesApi, delLikesApi } from "./api.js";
 
 export let user = getUserFromLocalStorage();
 export let page = null;
