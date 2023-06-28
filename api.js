@@ -108,7 +108,7 @@ export function likeFetchFunc({ postId, token }) {
   })
     .then((response) => {
       if (response.status === 401) {
-        throw new Error("Нет авторизации");
+        throw new Error("Поставить лайк могут только авторизованные пользователи");
       }
       return response.json();
     })
@@ -123,7 +123,7 @@ export function dislikeFetchFunc({ postId, token }) {
   })
     .then((response) => {
       if (response.status === 401) {
-        throw new Error("Нет авторизации");
+        throw new Error("Поставить лайк могут только авторизованные пользователи");
       }
       return response.json();
     })
