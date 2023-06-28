@@ -65,6 +65,7 @@ export function renderPostsPageComponent({ appEl }) {
       const index = posts.findIndex((post) => post.id === postId);
 
       if (posts[index].isLiked) {
+
         dislikeFetchFunc({ postId, token: getToken() })
           .then((object) => {
             posts[index].likes = object.post.likes;
@@ -75,6 +76,7 @@ export function renderPostsPageComponent({ appEl }) {
             console.error(error);
           })
       } else {
+        
         likeFetchFunc({ postId, token: getToken() })
           .then((object) => {
             posts[index].likes = object.post.likes;
