@@ -19,7 +19,7 @@ export function getPosts({ token }) {
       return response.json();
     })
     .then((data) => {
-      return data.posts;
+      return data.posts
     });
 }
 
@@ -54,6 +54,79 @@ export function loginUser({ login, password }) {
     }
     return response.json();
   });
+}
+
+export function addNewPost({ description, imageUrl, token }) {
+  return fetch(postsHost, {
+    method: "POST",
+    body: JSON.stringify({
+      description,
+      imageUrl
+    }),
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      if (response.status === 400) {
+        throw new Error("Не добавлено фото или описание");
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      if (error.message === "Не добавлено фото или описание") {
+        alert("Не добавлено фото или описание");
+        return;
+      }
+    });
+}
+
+export function getPostsUser({ token, id }) {
+  return fetch(postsHost + `/user-posts/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return data.posts
+    })
+}
+
+export function likeFetchFunc({ postId, token }) {
+  return fetch(postsHost + `/${postId}/like`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    }
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+      return response.json();
+    })
+}
+
+export function dislikeFetchFunc({ postId, token }) {
+  return fetch(postsHost + `/${postId}/dislike`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    }
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+      return response.json();
+    })
 }
 
 // Загружает картинку в облако, возвращает url загруженной картинки
