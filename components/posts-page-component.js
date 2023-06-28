@@ -1,6 +1,6 @@
-import { USER_POSTS_PAGE, POSTS_PAGE } from "../routes.js";
+import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, getToken } from "../index.js";
+import { posts, goToPage, getToken, renderApp } from "../index.js";
 import { likeFetchFunc, dislikeFetchFunc } from "../api.js";
 import { formatDistanceToNow } from "../node_modules/date-fns";
 import { ru } from "../node_modules/date-fns/locale"
@@ -12,7 +12,7 @@ export function renderPostsPageComponent({ appEl }) {
 
   const appHtml = posts.
     map((post) => {
-      const createDate = formatDistanceToNow(new Date(post.createdAt), { locale: ru,addSuffix: true });
+      const createDate = formatDistanceToNow(new Date(post.createdAt), { locale: ru, addSuffix: true });
       return `                  
     <li class="post">
     <div class="post-header" data-user-id="${post.user.id}">
@@ -61,35 +61,48 @@ export function renderPostsPageComponent({ appEl }) {
       });
     });
 
-    if (getToken()) {
+    const toggleLikes = ({ postId }) => {
+      const index = posts.findIndex((post) => post.id === postId);
 
-      const countLikesElements = document.querySelectorAll(".like-button");
+      if (posts[index].isLiked) {
 
-      for (const countLikesElement of countLikesElements) {
-        countLikesElement.addEventListener('click', (event) => {
-          event.stopPropagation();
-          const postId = countLikesElement.dataset.postId;
-
-          if (countLikesElement.dataset.liked === 'false') {
-
-            likeFetchFunc({ postId, token: getToken() })
-              .then(() => {
-                goToPage(POSTS_PAGE);
-              })
-              .catch((error) => {
-                console.log(error);
-              })
-          } else {
-            dislikeFetchFunc({ postId, token: getToken() })
-              .then(() => {
-                goToPage(POSTS_PAGE);
-              })
-              .catch((error) => {
-                console.log(error);
-              })
-          }
-        });
+        dislikeFetchFunc({ postId, token: getToken() })
+          .then((object) => {
+            posts[index].likes = object.post.likes;
+            posts[index].isLiked = false;
+            renderApp();
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+      } else {
+        
+        likeFetchFunc({ postId, token: getToken() })
+          .then((object) => {
+            posts[index].likes = object.post.likes;
+            posts[index].isLiked = true;
+            renderApp();
+          })
+          .catch((error) => {
+            console.error(error);
+          })
       }
+    }
+
+    const countLikesElements = document.querySelectorAll(".like-button");
+
+    for (const countLikesElement of countLikesElements) {
+      countLikesElement.addEventListener('click', (event) => {
+        event.stopPropagation();
+
+        if (!getToken()) {
+          alert("Поставить лайк могут только авторизованные пользователи");
+          return;
+        }
+        const postId = countLikesElement.dataset.postId;
+
+        toggleLikes({ postId });
+      });
     }
   }
 }
