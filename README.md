@@ -12,6 +12,7 @@ https://anna-shatilova.github.io/webdev-cw-instapro/
 
 ## Технологический стек
 
-JS
-React
-Redux + ReduxToolkit + RTKQuery
+- JS
+- React
+- CSS
+- Date-fns
